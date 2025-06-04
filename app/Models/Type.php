@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Astrotomic\Translatable\Translatable;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 
 class Type extends Model implements TranslatableContract
 {
@@ -13,23 +13,35 @@ class Type extends Model implements TranslatableContract
 
     public $translatedAttributes = ['name'];
 
-    protected $fillable = ['sprite_url'];
-
-    protected $casts = [
-      'sprite_url' => 'string',
-    ];
-
-    public function pokemonEvolutions(){
-        return $this->hasMany(PokemonEvolution::class);
+    public function knowMoveTypeId()
+    {
+        return $this->hasMany(PokemonEvolution::class, 'know_move_type_id');
     }
 
-    public function typeInteractions(){
-        return $this->hasMany(TypeInteraction::class);
+    public function partyTypeId()
+    {
+        return $this->hasMany(PokemonEvolution::class, 'party_type_id');
     }
 
-    public function moves(){
+    public function interactTo()
+    {
+        return $this->hasMany(Type::class, 'type_interactions', 'from_type_id', 'to_type_id')
+            ->withPivot('type_interaction_state_id');
+    }
+
+    public function interactedBy()
+    {
+        return $this->hasMany(Type::class, 'type_interactions', 'to_type_id', 'from_type_id')
+            ->withPivot('tpe_interaction_state_id');
+    }
+
+    public function pokemonVarietyType()
+    {
+        return $this->belongsToMany(PokemonVariety::class);
+    }
+
+    public function moves()
+    {
         return $this->hasMany(Move::class);
     }
-            
-
 }

@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('types', function (Blueprint $table) {
             $table->id();
-            $table->string('sprite_url');
+            $table->string('color')->nullable();
+            $table->string('icon')->nullable();
+            $table->string('background')->nullable();
             $table->timestamps();
         });
     }
